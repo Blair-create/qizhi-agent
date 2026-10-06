@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -369,20 +369,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/b9/d4/75d2375a20d80aa262a8adee77bf56950e9292929e394b9fae2481803f11/cryptography-45.0.2-cp37-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:c0c000c1a09f069632d8a9eb3b610ac029fcc682f1d69b758e625d6ee713f4ed", size = 4560535, upload-time = "2025-05-18T02:45:59.33Z" },
     { url = "https://files.pythonhosted.org/packages/aa/18/c3a94474987ebcfb88692036b2ec44880d243fefa73794bdcbf748679a6e/cryptography-45.0.2-cp37-abi3-win32.whl", hash = "sha256:08281de408e7eb71ba3cd5098709a356bfdf65eebd7ee7633c3610f0aa80d79b", size = 2922045, upload-time = "2025-05-18T02:46:01.012Z" },
     { url = "https://files.pythonhosted.org/packages/63/63/fb28b30c144182fd44ce93d13ab859791adbf923e43bdfb610024bfecda1/cryptography-45.0.2-cp37-abi3-win_amd64.whl", hash = "sha256:48caa55c528617fa6db1a9c3bf2e37ccb31b73e098ac2b71408d1f2db551dde4", size = 3393321, upload-time = "2025-05-18T02:46:03.441Z" },
-]
-
-[[package]]
-name = "dashscope"
-version = "1.24.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "aiohttp" },
-    { name = "cryptography" },
-    { name = "requests" },
-    { name = "websocket-client" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1f/5d/5f13af8659cde5ac488af3a221bc5d051e3014865c0d69723cb8907f6649/dashscope-1.24.2-py3-none-any.whl", hash = "sha256:0d48b76928811dcb44a3048ec9122e147a223179cb6367a8d8ed009c7033089a", size = 1301204, upload-time = "2025-08-20T01:52:31.045Z" },
 ]
 
 [[package]]
@@ -968,19 +954,6 @@ wheels = [
 ]
 
 [[package]]
-name = "langchain-deepseek"
-version = "0.1.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "langchain-core" },
-    { name = "langchain-openai" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ed/7f/be5bcf99b3814214a02ac205bda66d49d55a7d5440d47223105cef5df063/langchain_deepseek-0.1.3.tar.gz", hash = "sha256:89dd6aa120fb50dcfcd3d593626d34c1c40deefe4510710d0807fcc19481adf5", size = 7860, upload-time = "2025-03-21T17:11:58.356Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/00/7d/51b60aa91fa77742fc461704e5a8497e856156ae878102e6942799a78915/langchain_deepseek-0.1.3-py3-none-any.whl", hash = "sha256:8588e826371b417fca65c02f4273b4061eb9815a7bfcd5eb05acaa40d603aa89", size = 7123, upload-time = "2025-03-21T17:11:57.481Z" },
-]
-
-[[package]]
 name = "langchain-mcp-adapters"
 version = "0.1.14"
 source = { registry = "https://pypi.org/simple" }
@@ -992,19 +965,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/8a/36/0179462acf344ad18cf6d7190b7a6797e015386a3b4518fcd960bb831c61/langchain_mcp_adapters-0.1.14.tar.gz", hash = "sha256:36f8131d0b3b5ca28df03440be4dc2a3636e2f73e3e4a0a266d606ffaa12adda", size = 31119, upload-time = "2025-11-24T15:00:54.591Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/17/e0/eee23ea4d651d2b2dd5b1a5e1b7f66ee212940a595917a280663d5f745b9/langchain_mcp_adapters-0.1.14-py3-none-any.whl", hash = "sha256:b900d37d1a82261e408e663b7176a1a74cf0072e17ae9e4241c068093912394a", size = 21133, upload-time = "2025-11-24T15:00:53.569Z" },
-]
-
-[[package]]
-name = "langchain-ollama"
-version = "0.3.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "langchain-core" },
-    { name = "ollama" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/59/9f/6683f69f14b0cde3556c6b7752fb290bfce743981dc1312efa924619365f/langchain_ollama-0.3.3.tar.gz", hash = "sha256:7d6ed75bfb706751b83173fe886b72ae25bb0b1bd7f3eb2622821c4149f7807b", size = 21913, upload-time = "2025-05-15T20:27:06.027Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/84/6f/ab7a470522e27b95ed008eb9ef81b1ab55321f3f3aff21ca0109aae53cdf/langchain_ollama-0.3.3-py3-none-any.whl", hash = "sha256:f1c745a4b59d36bb51995c23c6b0fbc20f71956715659425ab88639a14b213cd", size = 21156, upload-time = "2025-05-15T20:27:05.159Z" },
 ]
 
 [[package]]
@@ -1344,20 +1304,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/98/8a/6ea75ff7acf89f43afb157604429af4661a9840b1f2cece602b6a13c1893/oauthlib-3.3.0.tar.gz", hash = "sha256:4e707cf88d7dfc22a8cce22ca736a2eef9967c1dd3845efc0703fc922353eeb2", size = 190292, upload-time = "2025-06-17T23:19:18.309Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e1/3d/760b1456010ed11ce87c0109007f0166078dfdada7597f0091ae76eb7305/oauthlib-3.3.0-py3-none-any.whl", hash = "sha256:a2b3a0a2a4ec2feb4b9110f56674a39b2cc2f23e14713f4ed20441dfba14e934", size = 165155, upload-time = "2025-06-17T23:19:16.771Z" },
-]
-
-[[package]]
-name = "ollama"
-version = "0.4.8"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "httpx" },
-    { name = "pydantic", version = "2.11.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.14'" },
-    { name = "pydantic", version = "2.13.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.14'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/e2/64/709dc99030f8f46ec552f0a7da73bbdcc2da58666abfec4742ccdb2e800e/ollama-0.4.8.tar.gz", hash = "sha256:1121439d49b96fa8339842965d0616eba5deb9f8c790786cdf4c0b3df4833802", size = 12972, upload-time = "2025-04-16T21:55:14.101Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/33/3f/164de150e983b3a16e8bf3d4355625e51a357e7b3b1deebe9cc1f7cb9af8/ollama-0.4.8-py3-none-any.whl", hash = "sha256:04312af2c5e72449aaebac4a2776f52ef010877c554103419d3f36066fe8af4c", size = 13325, upload-time = "2025-04-16T21:55:12.779Z" },
 ]
 
 [[package]]
@@ -2055,14 +2001,11 @@ dependencies = [
     { name = "aiosqlite" },
     { name = "chromadb" },
     { name = "cryptography" },
-    { name = "dashscope" },
     { name = "fastapi", extra = ["standard"] },
     { name = "langchain" },
     { name = "langchain-chroma" },
     { name = "langchain-community" },
-    { name = "langchain-deepseek" },
     { name = "langchain-mcp-adapters" },
-    { name = "langchain-ollama" },
     { name = "langchain-openai" },
     { name = "langgraph" },
     { name = "langgraph-supervisor" },
@@ -2090,14 +2033,11 @@ requires-dist = [
     { name = "aiosqlite", specifier = ">=0.21.0" },
     { name = "chromadb", specifier = ">=0.6.3" },
     { name = "cryptography", specifier = ">=45.0.2" },
-    { name = "dashscope", specifier = ">=1.24.2" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.12" },
     { name = "langchain", specifier = ">=0.3.25" },
     { name = "langchain-chroma", specifier = ">=0.2.3" },
     { name = "langchain-community", specifier = ">=0.3.24" },
-    { name = "langchain-deepseek", specifier = ">=0.1.3" },
     { name = "langchain-mcp-adapters", specifier = ">=0.1.0,<0.2" },
-    { name = "langchain-ollama", specifier = ">=0.3.3" },
     { name = "langchain-openai", specifier = ">=0.3.17" },
     { name = "langgraph", specifier = ">=0.5.0" },
     { name = "langgraph-supervisor", specifier = ">=0.0.27" },
