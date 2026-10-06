@@ -1,0 +1,2 @@
+# 将 uv 包缓存固定在项目所在的 D 盘。
+cache-dir = ".uv-cache"

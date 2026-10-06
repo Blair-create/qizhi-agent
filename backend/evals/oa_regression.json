@@ -1,0 +1,232 @@
+[
+  {
+    "id": "employee_lookup",
+    "input": "查询张伟的员工信息",
+    "expected_tools": [
+      "get_user_info"
+    ],
+    "required_terms": [],
+    "forbidden_terms": [
+      "我猜",
+      "可能是",
+      "大概"
+    ]
+  },
+  {
+    "id": "policy_grounding",
+    "input": "公司的年假制度是什么？",
+    "expected_tools": [
+      "search_handbook"
+    ],
+    "required_terms": [],
+    "forbidden_terms": [
+      "根据常识",
+      "一般来说"
+    ]
+  },
+  {
+    "id": "department_query",
+    "input": "李四在哪个部门工作？",
+    "expected_tools": [
+      "get_user_department"
+    ],
+    "required_terms": [],
+    "forbidden_terms": [
+      "可能",
+      "应该"
+    ]
+  },
+  {
+    "id": "all_employees",
+    "input": "公司一共有多少员工？",
+    "expected_tools": [
+      "get_all_user_info"
+    ],
+    "required_terms": [],
+    "forbidden_terms": [
+      "估计",
+      "大约"
+    ]
+  },
+  {
+    "id": "multi_tool_planning",
+    "input": "查询张伟的部门信息和员工手册中的考勤制度",
+    "expected_tools": [
+      "get_user_department",
+      "search_handbook"
+    ],
+    "required_terms": [],
+    "forbidden_terms": [
+      "编造",
+      "虚构"
+    ]
+  },
+  {
+    "id": "complex_policy_query",
+    "input": "请告诉我公司的加班补偿和调休制度",
+    "expected_tools": [
+      "search_handbook"
+    ],
+    "required_terms": [],
+    "forbidden_terms": [
+      "通常",
+      "一般而言"
+    ]
+  },
+  {
+    "id": "employee_not_found",
+    "input": "查询一个不存在的员工：王五五",
+    "expected_tools": [
+      "get_user_info"
+    ],
+    "required_terms": [
+      "未找到",
+      "不存在"
+    ],
+    "forbidden_terms": [
+      "可能离职了"
+    ]
+  },
+  {
+    "id": "handbook_not_found",
+    "input": "查询公司的宠物福利政策",
+    "expected_tools": [
+      "search_handbook"
+    ],
+    "required_terms": [
+      "未找到",
+      "没有相关"
+    ],
+    "forbidden_terms": [
+      "通常包括",
+      "可能会有"
+    ]
+  },
+  {
+    "id": "multiple_employees",
+    "input": "列出所有技术部的员工",
+    "expected_tools": [
+      "get_all_user_info"
+    ],
+    "required_terms": [],
+    "forbidden_terms": []
+  },
+  {
+    "id": "policy_comparison",
+    "input": "比较年假制度和病假制度的区别",
+    "expected_tools": [
+      "search_handbook"
+    ],
+    "required_terms": [],
+    "forbidden_terms": [
+      "个人理解",
+      "我认为"
+    ]
+  },
+  {
+    "id": "precise_tool_selection",
+    "input": "张伟的直属领导是谁？",
+    "expected_tools": [
+      "get_user_info"
+    ],
+    "required_terms": [],
+    "forbidden_terms": []
+  },
+  {
+    "id": "handbook_specific_query",
+    "input": "员工手册中关于迟到早退的规定是什么？",
+    "expected_tools": [
+      "search_handbook"
+    ],
+    "required_terms": [],
+    "forbidden_terms": [
+      "常见的",
+      "一般公司"
+    ]
+  },
+  {
+    "id": "department_structure",
+    "input": "技术部有哪些人？",
+    "expected_tools": [
+      "get_all_user_info"
+    ],
+    "required_terms": [],
+    "forbidden_terms": []
+  },
+  {
+    "id": "employee_details",
+    "input": "查询李明的入职时间和职位",
+    "expected_tools": [
+      "get_user_info"
+    ],
+    "required_terms": [],
+    "forbidden_terms": [
+      "估计",
+      "大概"
+    ]
+  },
+  {
+    "id": "multi_step_reasoning",
+    "input": "技术部总监是谁？他的员工信息是什么？",
+    "expected_tools": [
+      "get_all_user_info",
+      "get_user_info"
+    ],
+    "required_terms": [],
+    "forbidden_terms": []
+  },
+  {
+    "id": "policy_details",
+    "input": "员工手册中关于年假申请流程的详细说明",
+    "expected_tools": [
+      "search_handbook"
+    ],
+    "required_terms": [],
+    "forbidden_terms": [
+      "通常需要",
+      "一般流程"
+    ]
+  },
+  {
+    "id": "grounded_response",
+    "input": "公司有哪些福利政策？",
+    "expected_tools": [
+      "search_handbook"
+    ],
+    "required_terms": [],
+    "forbidden_terms": [
+      "常见的福利",
+      "一般包括"
+    ]
+  },
+  {
+    "id": "employee_count",
+    "input": "统计公司员工人数",
+    "expected_tools": [
+      "get_all_user_info"
+    ],
+    "required_terms": [],
+    "forbidden_terms": []
+  },
+  {
+    "id": "policy_interpretation",
+    "input": "如何理解员工手册中的绩效考核标准？",
+    "expected_tools": [
+      "search_handbook"
+    ],
+    "required_terms": [],
+    "forbidden_terms": [
+      "我的理解",
+      "个人认为"
+    ]
+  },
+  {
+    "id": "department_info",
+    "input": "查询技术部的部门负责人和人员配置",
+    "expected_tools": [
+      "get_all_user_info"
+    ],
+    "required_terms": [],
+    "forbidden_terms": []
+  }
+]

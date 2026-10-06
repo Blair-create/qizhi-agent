@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "oa-business": {
+      "transport": "stdio",
+      "command": "{python}",
+      "args": ["mcp_servers/oa_business_server.py"]
+    }
+  }
+}

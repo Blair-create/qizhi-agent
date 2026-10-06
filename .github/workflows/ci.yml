@@ -1,0 +1,54 @@
+name: 项目检查
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  frontend:
+    name: 前端类型与构建检查
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.17.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: 安装锁定依赖
+        run: pnpm install --frozen-lockfile
+      - name: 检查类型
+        run: pnpm typecheck
+      - name: 构建前端
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:8000
+  backend:
+    name: 后端语法与单元测试
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      PYTHONPATH: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: 0.12.10
+          python-version: '3.13'
+      - name: 安装锁定依赖
+        run: uv sync --locked
+      - name: 准备无密钥示例配置
+        run: cp .env.example .env
+      - name: 检查语法
+        run: uv run --locked python -m compileall -q app mcp_servers tests
+      - name: 运行离线单元测试
+        run: uv run --locked python -m unittest discover -s tests -p 'test_*.py' -v
