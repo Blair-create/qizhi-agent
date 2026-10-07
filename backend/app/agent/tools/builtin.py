@@ -1,5 +1,6 @@
 from langchain_core.tools import tool
 
+from core.config import settings
 from infrastructure.rag import hand_book_vector_store
 
 
@@ -10,8 +11,11 @@ async def search_handbook(query: str) -> str:
         result = hand_book_vector_store.similarity_search(query, k=10)
     except Exception as exc:
         message = str(exc)
-        if "ollama" in message.lower() or "11434" in message:
-            return "知识库暂时不可用：请检查模型网关、模型配置和网络连接后重试。"
+        lowered = message.lower()
+        if any(marker in lowered for marker in ("ollama", "11434", "model_not_found", "no available channel", "embedding")):
+            return ("知识库暂时不可用：当前配置的向量模型 "
+                    f"“{settings.OLLAMA_EMBEDDING_MODEL}”在 Ollama 中不可用，"
+                    "请确认 Ollama 已启动并执行 ollama pull bge-m3。")
         raise
     if not result:
         return "未找到相关内容"

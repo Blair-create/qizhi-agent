@@ -55,7 +55,8 @@ DEFAULT_MODEL=gpt-5.6-sol
 | `DATABASE_URL` | `sqlite+aiosqlite:///resource/database.db` | 业务数据库；也支持 MySQL URL |
 | `AGENT_STATE_DB` | `resource/agent_state.db` | 对话记忆数据库 |
 | `AGENT_TRACE_DB` | `resource/agent_traces.db` | 执行轨迹数据库 |
-| `OPENAI_EMBEDDING_MODEL` | `text-embedding-3-small` | 员工手册向量检索使用的 embedding 模型 |
+| `OLLAMA_BASE_URL` | `http://localhost:11434` | 员工手册检索使用的本地 Ollama 地址 |
+| `OLLAMA_EMBEDDING_MODEL` | `bge-m3` | 员工手册向量检索使用的 Ollama embedding 模型 |
 | `CHROMA_PATH` | `resource/chroma_db` | Chroma 持久化目录 |
 | `MCP_CONFIG_PATH` | 空 | MCP 配置文件；为空时只使用内置工具 |
 | `CORS_ORIGINS` | 本地 3000/3001 端口 | 允许访问后端的前端来源 |
@@ -102,7 +103,13 @@ pnpm dev
 
 ### 3. 员工手册检索
 
-内置 `search_handbook` 工具从 Chroma 的 `handbook` 集合检索内容，并使用 `OPENAI_EMBEDDING_MODEL` 生成查询向量。仓库只提供检索代码，不提供通用的 PDF 导入命令；请使用拥有合法使用权限的资料建立该集合，并确保 `CHROMA_PATH` 与服务启动时一致。缺少集合内容时，应用仍可启动，但检索不会返回有效制度内容。
+内置 `search_handbook` 工具从 Chroma 的 `handbook` 集合检索内容，并使用本地 Ollama 的 `OLLAMA_EMBEDDING_MODEL` 生成查询向量。默认模型为 `bge-m3`，启动后端前请确认 Ollama 正在运行并已下载模型：
+
+```bash
+ollama pull bge-m3
+```
+
+仓库只提供检索代码，不提供通用的 PDF 导入命令；请使用拥有合法使用权限的资料建立该集合，并确保 `CHROMA_PATH` 与服务启动时一致。项目默认的 `backend/resource/chroma_db` 已按 1024 维 `bge-m3` 向量建立；如果更换 embedding 模型，需要重新构建 Chroma 索引。缺少集合内容时，应用仍可启动，但检索不会返回有效制度内容。
 
 ## 项目结构
 

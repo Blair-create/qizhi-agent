@@ -21,17 +21,13 @@ export const useStreamChat = ({
   setIsStreaming,
 }: UseStreamChatProps) => {
   const abortControllerRef = useRef<AbortController | null>(null);
+  const activeRequestRef = useRef<string | null>(null);
 
   const stopStream = () => {
     abortControllerRef.current?.abort();
+    activeRequestRef.current = null;
     abortControllerRef.current = null;
-    setMessages((prev) => {
-      const lastMessage = prev[prev.length - 1];
-      if (lastMessage?.type === "ai" && !lastMessage.content && !lastMessage.toolCall?.calls.length) {
-        return prev.slice(0, -1);
-      }
-      return prev;
-    });
+    setMessages((prev) => prev.filter((item) => item.content || item.type !== "ai" || item.status !== "running"));
     setIsStreaming(false);
   };
 
@@ -40,6 +36,8 @@ export const useStreamChat = ({
     setIsStreaming(true);
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
+    const aiMessageId = `ai_${crypto.randomUUID()}`;
+    activeRequestRef.current = aiMessageId;
 
     const newUserMessage: Message = {
       id: `user_${Date.now()}`,
@@ -47,7 +45,7 @@ export const useStreamChat = ({
       content: input,
     };
     const newAiMessage: Message = {
-      id: `ai_${Date.now()}`,
+      id: aiMessageId,
       type: "ai",
       content: "",
       status: "running",
@@ -78,31 +76,26 @@ export const useStreamChat = ({
       const decoder = new TextDecoder();
       let buffer = "";
 
+      const updateAi = (updater: (msg: Message) => Message) => {
+        setMessages((prev) => prev.map((msg) => msg.id === aiMessageId ? updater(msg) : msg));
+      };
       const consumeEvent = (rawEvent: string) => {
         const dataLine = rawEvent.split("\n").find((line) => line.startsWith("data: "));
         if (!dataLine) return;
         const data = JSON.parse(dataLine.slice(6));
         switch (data.type) {
           case "run_completed":
-            setMessages((prev) => prev.map((msg, i) => i === prev.length - 1
-              ? { ...msg, content: data.answer, status: "completed", runId: data.run_id }
-              : msg));
+            updateAi((msg) => ({ ...msg, content: data.answer, status: "completed", runId: data.run_id }));
             break;
           case "run_failed":
-            setMessages((prev) => prev.map((msg, i) => i === prev.length - 1
-              ? { ...msg, content: `执行失败：${data.error}`, status: "failed", runId: data.run_id }
-              : msg));
+            updateAi((msg) => ({ ...msg, content: `执行失败：${data.error}`, status: "failed", runId: data.run_id }));
             break;
           case "approval_required":
-            setMessages((prev) => prev.map((msg, i) => i === prev.length - 1
-              ? { ...msg, status: "waiting_approval", approval: data, runId: data.run_id }
-              : msg));
+            updateAi((msg) => ({ ...msg, status: "waiting_approval", approval: data, runId: data.run_id }));
             break;
           case "end": setIsStreaming(false); return;
           default:
-            setMessages((prev) => prev.map((msg, i) => i === prev.length - 1
-              ? { ...msg, runtimeEvents: [...(msg.runtimeEvents || []), data], runId: data.run_id, status: "running" }
-              : msg));
+            updateAi((msg) => ({ ...msg, runtimeEvents: [...(msg.runtimeEvents || []), data], runId: data.run_id, status: "running" }));
         }
       };
 
@@ -123,12 +116,13 @@ export const useStreamChat = ({
       }
       console.error("请求失败：", error);
       message.error(error instanceof Error ? error.message : "请求失败，请稍后重试。");
-      setMessages((prev) => prev.filter((msg, index) =>
-        !(index === prev.length - 1 && msg.type === "ai" && !msg.content)
-      ));
+      setMessages((prev) => prev.map((msg) => msg.id === aiMessageId && msg.type === "ai"
+        ? { ...msg, content: msg.content || `请求失败：${error instanceof Error ? error.message : "请稍后重试。"}`, status: "failed" }
+        : msg));
     } finally {
       if (abortControllerRef.current === abortController) {
         abortControllerRef.current = null;
+        activeRequestRef.current = null;
       }
       setIsStreaming(false);
     }

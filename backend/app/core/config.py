@@ -31,7 +31,12 @@ class Settings(BaseSettings):
     
     DEFAULT_MODEL: str | None = None
     
+    # 代理服务通常不会提供 OpenAI 的默认 embedding 名称，必须按代理模型清单配置。
     OPENAI_EMBEDDING_MODEL: str = "text-embedding-3-small"
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
+    OLLAMA_EMBEDDING_MODEL: str = "bge-m3"
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
+    OLLAMA_EMBEDDING_MODEL: str = "bge-m3"
     
     CHROMA_PATH: str | None = None
     # MCP Server 配置文件。未配置时不加载 MCP，原有智能体不受影响。
@@ -41,6 +46,7 @@ class Settings(BaseSettings):
     AGENT_TRACE_DB: str = "resource/agent_traces.db"
     AGENT_MAX_STEP_ATTEMPTS: int = 2
     AGENT_RUN_TIMEOUT_SECONDS: float = 180.0
+    AGENT_TIMEZONE: str = "Asia/Shanghai"
     
     def is_dev(self):
         return self.DEV

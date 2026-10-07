@@ -25,6 +25,11 @@ async def update_employee(name: str) -> dict:
     """更新测试员工。"""
     return {"updated": name}
 
+@tool
+async def failing_lookup(query: str) -> str:
+    """模拟知识库不可用。"""
+    raise RuntimeError("服务暂时不可用")
+
 
 class ScriptedModel:
     def __init__(self):
@@ -94,6 +99,31 @@ class AgentRuntimeTest(unittest.TestCase):
             trace_names = {span["name"] for span in await self.traces.get_trace(result.run_id)}
             self.assertTrue({"planner", "react.decide", "tool.lookup_employee", "reflect", "finalize"}.issubset(trace_names))
             self.assertEqual(len(await self.memory.recent_messages("thread")), 2)
+        asyncio.run(verify())
+
+    def test_explicit_memory_is_saved_without_command_prefix(self):
+        self.registry.register(lookup_employee)
+        runtime = AgentHarness(ScriptedModel(), self.memory, self.traces, self.registry)
+        async def verify():
+            result = await runtime.run(RunRequest("记住我喜欢简洁回答", "thread", "user"))
+            if result.status != RunStatus.COMPLETED:
+                self.fail(result.error)
+            self.assertEqual(result.status, RunStatus.COMPLETED)
+            recalled = await self.memory.recall("user", "简洁回答")
+            self.assertEqual(recalled[0].content, "我喜欢简洁回答")
+        asyncio.run(verify())
+
+    def test_tool_failure_is_reported_and_run_fails(self):
+        self.registry.register(failing_lookup)
+        runtime = AgentHarness(ScriptedModel(), self.memory, self.traces, self.registry)
+
+        async def verify():
+            events = []
+            result = await runtime.run(RunRequest("查询知识库", "thread", "user"), events.append)
+            self.assertEqual(result.status, RunStatus.FAILED)
+            self.assertIn("工具", result.error)
+            self.assertIn("tool_failed", {event.type for event in events})
+            self.assertNotIn("run_completed", {event.type for event in events})
         asyncio.run(verify())
 
 

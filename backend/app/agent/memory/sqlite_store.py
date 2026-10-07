@@ -73,22 +73,49 @@ class SQLiteMemoryStore:
 
     def _remember(self, user_id: str, kind: str, content: str, metadata: dict[str, Any]) -> None:
         with closing(self._connect()) as db:
+            # 同一用户的回答风格以最后一次明确设置为准，也兼容没有主题元数据的旧记录。
+            key = self._preference_key(content)
+            if key:
+                db.execute("BEGIN IMMEDIATE")
+                rows = db.execute("SELECT id, content FROM memories WHERE user_id=? AND kind IN ('preference', 'explicit')",
+                                  (user_id,)).fetchall()
+                obsolete = [(row["id"],) for row in rows if self._preference_key(row["content"]) == key]
+                db.executemany("DELETE FROM memories WHERE id=?", obsolete)
+                metadata = {**metadata, "key": key}
             db.execute("INSERT OR IGNORE INTO memories(user_id, kind, content, metadata, created_at) VALUES(?,?,?,?,?)",
                        (user_id, kind, content, json.dumps(metadata, ensure_ascii=False), datetime.now(timezone.utc).isoformat()))
             db.commit()
+
+    @staticmethod
+    def _preference_key(content: str) -> str | None:
+        if (re.search(r"(?:我|偏好)", content)
+                and re.search(r"回答|回复|答复", content)
+                and re.search(r"简洁|简短|简介|详细|详尽|精简", content)
+                and not re.search(r"[，,。；;\n]|(?:如果|时候|但是|但|而)", content)):
+            return "response_style"
+        return None
+
+    @staticmethod
+    def _terms(text: str) -> set[str]:
+        # 中文按字和相邻双字检索，避免将整句话当成唯一词语。
+        terms = set(re.findall(r"[a-z0-9_]+", text.casefold()))
+        for part in re.findall(r"[\u4e00-\u9fff]+", text):
+            terms.update(part)
+            terms.update(part[index:index + 2] for index in range(len(part) - 1))
+        return terms
 
     async def recall(self, user_id: str, query: str, limit: int = 5) -> list[MemoryItem]:
         return await asyncio.to_thread(self._recall, user_id, query, limit)
 
     def _recall(self, user_id: str, query: str, limit: int) -> list[MemoryItem]:
-        terms = set(re.findall(r"[\w\u4e00-\u9fff]+", query.lower()))
+        terms = self._terms(query)
         with closing(self._connect()) as db:
             rows = db.execute("SELECT id, kind, content, metadata FROM memories WHERE user_id=? ORDER BY id DESC LIMIT 200",
                               (user_id,)).fetchall()
         items: list[MemoryItem] = []
         for row in rows:
-            text_terms = set(re.findall(r"[\w\u4e00-\u9fff]+", row["content"].lower()))
+            text_terms = self._terms(row["content"])
             score = len(terms & text_terms) / max(len(terms), 1)
-            if score > 0 or not terms:
+            if score > 0 or not terms or row["kind"] in {"preference", "explicit"}:
                 items.append(MemoryItem(row["id"], row["kind"], row["content"], json.loads(row["metadata"]), score))
         return sorted(items, key=lambda item: (item.score, item.id), reverse=True)[:limit]
