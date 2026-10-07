@@ -88,7 +88,8 @@ class SQLiteMemoryStore:
 
     @staticmethod
     def _preference_key(content: str) -> str | None:
-        if (re.search(r"(?:我|偏好)", content)
+        content = content.strip().rstrip("。.!！ ")
+        if (re.search(r"^(?:请记住|记住|remember\s*)?(?:我(?:喜欢|更喜欢|偏好|习惯|希望|需要)|我的(?:回答|回复|答复)(?:风格|偏好)|偏好)", content, re.I)
                 and re.search(r"回答|回复|答复", content)
                 and re.search(r"简洁|简短|简介|详细|详尽|精简", content)
                 and not re.search(r"[，,。；;\n]|(?:如果|时候|但是|但|而)", content)):

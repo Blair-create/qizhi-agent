@@ -84,8 +84,9 @@ class AgentHarness:
                     raise ClarificationRequired("请告诉我需要记住的内容。")
                 offsets = {"大后天": 3, "后天": 2, "明天": 1, "今天": 0, "昨天": -1, "前天": -2}
                 memory_text = re.sub(
-                    "|".join(offsets),
-                    lambda match: (now.date() + timedelta(days=offsets[match.group()])).isoformat(),
+                    r"(?P<subject>我)?(?P<relative>" + "|".join(offsets) + ")",
+                    lambda match: ("我在" if match.group("subject") else "")
+                    + (now.date() + timedelta(days=offsets[match.group("relative")])).isoformat(),
                     memory_text,
                 )
                 # 显式记忆是 Harness 的能力，不依赖模型规划或业务工具。
@@ -219,7 +220,7 @@ class AgentHarness:
             r"|我(?:之前|以前|刚才).*(?:告诉|说过)"
             r"|(?:你|还).*(?:记得|记住).*(?:我|什么)"
             r"|(?:列出|查看|查询|总结).*(?:我的记忆|我的偏好|记住的内容)"
-            r"|我(?:今天|明天|后天).*(?:要做什么|有什么安排|有什么事)", text,
+            r"|我(?:今天|明天|后天).*(?:要(?:做|干)什么|有什么安排|有什么事)", text,
         ))
 
     async def stream(self, request: RunRequest) -> AsyncIterator[RuntimeEvent]:
