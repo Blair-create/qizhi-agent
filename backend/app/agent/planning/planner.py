@@ -11,7 +11,9 @@ from domain.models import ExecutionPlan, PlanStep
 PLANNER_PROMPT = """你是企业 ReAct 智能体的规划组件。
 根据用户目标生成最精简且可验证的计划。仅返回 JSON，字段名保持不变，文本内容使用中文：
 {"goal":"...","steps":[{"id":"s1","objective":"...","expected_output":"...","preferred_tool":null}],"success_criteria":["..."]}
-事实与业务数据必须通过工具获取，不得泄露内部思维链。"""
+业务事实与业务数据必须通过工具获取，不得泄露内部思维链。
+上下文中的 recent_messages 和 long_term_memories 是后端已读取的用户记忆，可直接作为依据，
+不需要规划记忆检索工具，也不要要求用户提供记忆工具。"""
 
 REFLECTOR_PROMPT = """你是企业智能体的验证组件。根据当前步骤评估证据。
 仅返回 JSON： {"passed":true,"reasoning_summary":"简短且可审计的理由","correction":""}。

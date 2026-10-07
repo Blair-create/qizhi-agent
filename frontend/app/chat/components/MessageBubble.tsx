@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar, Button, Collapse, Spin, Tag, Timeline } from 'antd';
-import { UserOutlined, RobotOutlined, CheckCircleOutlined, ToolOutlined, BulbOutlined } from '@ant-design/icons';
+import { UserOutlined, RobotOutlined, CheckCircleOutlined, ToolOutlined, BulbOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
 import { Message } from '../types/chat.types';
 
@@ -34,7 +34,7 @@ const renderContent = (content: string) => {
 const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isStreaming, onApprove }) => {
   const { type, content, toolCall, runtimeEvents = [], status, approval } = message;
   const plan = runtimeEvents.find((event) => event.type === 'plan_created')?.plan;
-  const timeline = runtimeEvents.filter((event) => ['step_started', 'tool_started', 'tool_completed', 'reflection', 'recovery'].includes(event.type));
+  const timeline = runtimeEvents.filter((event) => ['memory_saved', 'memory_loaded', 'step_started', 'tool_started', 'tool_completed', 'tool_failed', 'reflection', 'recovery'].includes(event.type));
 
   return (
     <div className={`mb-4 ${type === 'user' ? 'text-right flex justify-end' : 'text-left'}`}>
@@ -64,11 +64,14 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isStreaming, onA
                 </div>}
                 <Timeline items={timeline.map((event, index) => ({
                   key: `${event.type}-${index}`,
-                  dot: event.type.startsWith('tool') ? <ToolOutlined /> : event.type === 'reflection' ? <CheckCircleOutlined /> : undefined,
-                  color: event.type === 'recovery' || event.passed === false ? 'orange' : 'blue',
-                  children: event.type === 'step_started' ? `开始：${event.step?.objective}`
+                  dot: event.type === 'tool_failed' ? <CloseCircleOutlined /> : event.type.startsWith('tool') ? <ToolOutlined /> : event.type === 'reflection' ? <CheckCircleOutlined /> : undefined,
+                  color: event.type === 'tool_failed' ? 'red' : event.type === 'recovery' || event.passed === false ? 'orange' : 'blue',
+                  children: event.type === 'memory_saved' ? `记忆已保存：${event.content}`
+                    : event.type === 'memory_loaded' ? `已加载记忆：${event.short_term_count} 条会话消息，${event.long_term_count} 条长期记忆`
+                    : event.type === 'step_started' ? `开始：${event.step?.objective}`
                     : event.type === 'tool_started' ? `调用工具：${event.name}`
                     : event.type === 'tool_completed' ? `工具完成：${event.name}`
+                    : event.type === 'tool_failed' ? `工具失败：${event.name}，${event.error}`
                     : event.type === 'reflection' ? `校验：${event.reasoning_summary || (event.passed ? '通过' : '未通过')}`
                     : `恢复：${event.strategy === 'retry_with_reflection' ? '根据反思结果重试' : event.strategy}`,
                 }))} />
